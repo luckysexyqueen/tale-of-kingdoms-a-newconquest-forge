@@ -15,9 +15,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityData;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.IRangedAttackMob;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.RangedAttackMob;
 import net.minecraft.entity.ai.goal.FollowTargetGoal;
 import net.minecraft.entity.ai.goal.LookAtEntityGoal;
 import net.minecraft.entity.ai.goal.RevengeGoal;
@@ -27,7 +27,7 @@ import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.entity.mob.Monster;
+import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.entity.projectile.ProjectileUtil;
@@ -36,11 +36,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.particle.ParticleTypes;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
@@ -50,20 +51,19 @@ import org.jetbrains.annotations.Nullable;
 /**
  * We copied the illusioner AI for now!
  */
-public class ReficuleMageEntity extends SpellcastingEntity implements Monster, TeleportAbility, RangedAttackMob {
+public class ReficuleMageEntity extends SpellcastingEntity implements IMob, TeleportAbility, IRangedAttackMob {
 
     // wtf are these
     private int field_7296;
-    private final Vec3d[][] field_7297;
+    private final Vector3d[][] field_7297;
 
     public ReficuleMageEntity(@NotNull EntityType<? extends ReficuleMageEntity> entityType, @NotNull World world) {
         super(entityType, world);
-        this.experiencePoints = 5;
-        this.field_7297 = new Vec3d[2][4];
-
+        //this.xpReward = 5;
+        this.field_7297 = new Vector3d[2][4];
         for(int i = 0; i < 4; ++i) {
-            this.field_7297[0][i] = Vec3d.ZERO;
-            this.field_7297[1][i] = Vec3d.ZERO;
+            this.field_7297[0][i] = Vector3d.ZERO;
+            this.field_7297[1][i] = Vector3d.ZERO;
         }
     }
 
@@ -195,11 +195,11 @@ public class ReficuleMageEntity extends SpellcastingEntity implements Monster, T
 
     @Override
     public SoundEvent getCastSpellSound() {
-        return SoundEvents.ENTITY_ILLUSIONER_CAST_SPELL;
+        return SoundEvents.ILLUSIONER_CAST_SPELL;
     }
 
     @Override
-    public void attack(LivingEntity target, float pullProgress) {
+    public void performRangedAttack(LivingEntity target, float pullProgress) {
         ItemStack itemStack = this.getArrowType(this.getStackInHand(ProjectileUtil.getHandPossiblyHolding(this, Items.BOW)));
         PersistentProjectileEntity persistentProjectileEntity = ProjectileUtil.createArrowProjectile(this, itemStack, pullProgress);
         double d = target.getX() - this.getX();

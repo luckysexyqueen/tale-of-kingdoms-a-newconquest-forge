@@ -2,25 +2,20 @@ package com.convallyria.taleofkingdoms.client.entity.render;
 
 import com.convallyria.taleofkingdoms.TaleOfKingdoms;
 import com.convallyria.taleofkingdoms.common.entity.reficule.ReficuleMageEntity;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.EntityRenderDispatcher;
-import net.minecraft.client.render.entity.MobEntityRenderer;
-import net.minecraft.client.render.entity.feature.HeadFeatureRenderer;
-import net.minecraft.client.render.entity.feature.HeldItemFeatureRenderer;
-import net.minecraft.client.render.entity.model.PlayerEntityModel;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Identifier;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.renderer.entity.model.PlayerModel;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@Environment(EnvType.CLIENT)
-public class ReficuleMageEntityRenderer<T extends ReficuleMageEntity> extends MobEntityRenderer<ReficuleMageEntity, PlayerEntityModel<ReficuleMageEntity>> {
+@OnlyIn(Dist.CLIENT)
+public class ReficuleMageEntityRenderer<T extends ReficuleMageEntity> extends MobEntityRenderer<ReficuleMageEntity, PlayerModel<ReficuleMageEntity>> {
 
-    private static final Identifier TEXTURE = new Identifier(TaleOfKingdoms.MODID, "textures/entity/updated_textures/reficulemage.png");
+    private static final ResourceLocation TEXTURE = new ResourceLocation(TaleOfKingdoms.MODID, "textures/entity/updated_textures/reficulemage.png");
 
     public ReficuleMageEntityRenderer(EntityRenderDispatcher entityRenderDispatcher, PlayerEntityModel<ReficuleMageEntity> modelBipedIn) {
+        PlayerModel
         super(entityRenderDispatcher, modelBipedIn, 0.5F);
         this.addFeature(new HeadFeatureRenderer(this));
         this.addFeature(new HeldItemFeatureRenderer<ReficuleMageEntity, PlayerEntityModel<ReficuleMageEntity>>(this) {
