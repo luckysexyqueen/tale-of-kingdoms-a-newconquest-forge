@@ -11,50 +11,15 @@ import com.convallyria.taleofkingdoms.client.gui.shop.Shop;
 import com.convallyria.taleofkingdoms.client.gui.shop.ShopPage;
 import com.convallyria.taleofkingdoms.client.translation.Translations;
 import com.convallyria.taleofkingdoms.common.entity.guild.BlacksmithEntity;
-import com.convallyria.taleofkingdoms.common.shop.ArrowShopItem;
-import com.convallyria.taleofkingdoms.common.shop.BowShopItem;
-import com.convallyria.taleofkingdoms.common.shop.DiamondAxeShopItem;
-import com.convallyria.taleofkingdoms.common.shop.DiamondBootsShopItem;
-import com.convallyria.taleofkingdoms.common.shop.DiamondChestplateShopItem;
-import com.convallyria.taleofkingdoms.common.shop.DiamondHelmetShopItem;
-import com.convallyria.taleofkingdoms.common.shop.DiamondLeggingsShopItem;
-import com.convallyria.taleofkingdoms.common.shop.DiamondPickaxeShopItem;
-import com.convallyria.taleofkingdoms.common.shop.DiamondShovelShopItem;
-import com.convallyria.taleofkingdoms.common.shop.DiamondSwordShopItem;
-import com.convallyria.taleofkingdoms.common.shop.IronAxeShopItem;
-import com.convallyria.taleofkingdoms.common.shop.IronBootsShopItem;
-import com.convallyria.taleofkingdoms.common.shop.IronChestplateShopItem;
-import com.convallyria.taleofkingdoms.common.shop.IronHelmetShopItem;
-import com.convallyria.taleofkingdoms.common.shop.IronLeggingsShopItem;
-import com.convallyria.taleofkingdoms.common.shop.IronPickaxeShopItem;
-import com.convallyria.taleofkingdoms.common.shop.IronShovelShopItem;
-import com.convallyria.taleofkingdoms.common.shop.IronSwordShopItem;
-import com.convallyria.taleofkingdoms.common.shop.LeatherBootsShopItem;
-import com.convallyria.taleofkingdoms.common.shop.LeatherChestplateShopItem;
-import com.convallyria.taleofkingdoms.common.shop.LeatherHelmetShopItem;
-import com.convallyria.taleofkingdoms.common.shop.LeatherLeggingsShopItem;
-import com.convallyria.taleofkingdoms.common.shop.ShieldShopItem;
 import com.convallyria.taleofkingdoms.common.shop.ShopItem;
-import com.convallyria.taleofkingdoms.common.shop.StoneAxeShopItem;
-import com.convallyria.taleofkingdoms.common.shop.StonePickaxeShopItem;
-import com.convallyria.taleofkingdoms.common.shop.StoneShovelShopItem;
-import com.convallyria.taleofkingdoms.common.shop.StoneSwordShopItem;
-import com.convallyria.taleofkingdoms.common.shop.WoodenAxeShopItem;
-import com.convallyria.taleofkingdoms.common.shop.WoodenPickaxeShopItem;
-import com.convallyria.taleofkingdoms.common.shop.WoodenShovelShopItem;
-import com.convallyria.taleofkingdoms.common.shop.WoodenSwordShopItem;
 import com.convallyria.taleofkingdoms.common.world.ClientConquestInstance;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.screen.NamedScreenHandlerFactory;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -87,15 +52,7 @@ public class BlacksmithScreen extends ScreenTOK implements ShopScreenInterface {
         this.player = player;
         this.entity = entity;
         this.instance = instance;
-        this.shopItems = ImmutableList.of(new ArrowShopItem(), new BowShopItem(),
-                new DiamondAxeShopItem(), new DiamondBootsShopItem(),
-                new DiamondChestplateShopItem(), new DiamondHelmetShopItem(), new DiamondLeggingsShopItem(), new DiamondPickaxeShopItem(),
-                new DiamondShovelShopItem(), new DiamondSwordShopItem(),
-                new IronAxeShopItem(), new IronBootsShopItem(), new IronChestplateShopItem(), new IronHelmetShopItem(),
-                new IronLeggingsShopItem(), new IronPickaxeShopItem(), new IronShovelShopItem(), new IronSwordShopItem(),
-                new LeatherBootsShopItem(), new LeatherChestplateShopItem(), new LeatherHelmetShopItem(), new LeatherLeggingsShopItem(),
-                new ShieldShopItem(), new StoneAxeShopItem(), new StonePickaxeShopItem(), new StoneShovelShopItem(), new StoneSwordShopItem(),
-                new WoodenAxeShopItem(), new WoodenPickaxeShopItem(), new WoodenShovelShopItem(), new WoodenSwordShopItem());
+        this.shopItems = BlacksmithEntity.getBlacksmithShopItems();
         int guiScale = MinecraftClient.getInstance().options.guiScale;
         Optional<ScaleSize> scaleSize = SCALE_SIZES.stream().filter(size -> size.getGuiScale() == guiScale).findFirst();
         if (!scaleSize.isPresent()) return;
@@ -127,24 +84,7 @@ public class BlacksmithScreen extends ScreenTOK implements ShopScreenInterface {
         }));
 
         this.addButton(new ButtonWidget(this.width / 2 + 132, this.height / 2 - 30 , 55, 20, new LiteralText("Sell"), button -> {
-            /*
-             * WHY is this what we need to do for a proper sell GUI?
-             * I HATE THIS!!!!
-             * someone please rewrite it so blocks are not needed
-             */
-            BlockPos pos = entity.getBlockPos().add(0, 2, 0);
-            TaleOfKingdoms.getAPI().ifPresent(api -> {
-                api.getScheduler().queue(server -> {
-                    ServerPlayerEntity serverPlayer = server.getPlayerManager().getPlayer(player.getUuid());
-                    server.getOverworld().setBlockState(pos, TaleOfKingdoms.SELL_BLOCK.getDefaultState());
-                    BlockState state = server.getOverworld().getBlockState(pos);
-                    NamedScreenHandlerFactory screenHandlerFactory = state.createScreenHandlerFactory(server.getOverworld(), pos);
-                    if (screenHandlerFactory != null) {
-                        //With this call the server will request the client to open the appropriate Screenhandler
-                        serverPlayer.openHandledScreen(screenHandlerFactory);
-                    }
-                }, 1);
-            });
+            openSellGui(entity, player);
         }));
         this.addButton(new PageTurnWidget(this.width / 2 - 135, this.height / 2 - 100, false, button -> shop.previousPage(), true));
         this.addButton(new PageTurnWidget(this.width / 2 + 130, this.height / 2 - 100, true, button -> shop.nextPage(), true));

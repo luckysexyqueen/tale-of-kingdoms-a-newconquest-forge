@@ -15,6 +15,7 @@ import com.convallyria.taleofkingdoms.common.entity.guild.FoodShopEntity;
 import com.convallyria.taleofkingdoms.common.entity.guild.GuildArcherEntity;
 import com.convallyria.taleofkingdoms.common.entity.guild.GuildCaptainEntity;
 import com.convallyria.taleofkingdoms.common.entity.guild.GuildGuardEntity;
+import com.convallyria.taleofkingdoms.common.entity.guild.GuildMasterDefenderEntity;
 import com.convallyria.taleofkingdoms.common.entity.guild.GuildMasterEntity;
 import com.convallyria.taleofkingdoms.common.entity.guild.InnkeeperEntity;
 import com.convallyria.taleofkingdoms.common.entity.guild.LoneEntity;
@@ -45,7 +46,6 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
-import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
@@ -54,15 +54,11 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.command.argument.TextArgumentType;
-import net.minecraft.entity.Entity;
 import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.server.command.CommandManager;
 import net.minecraft.structure.StructurePieceType;
 import net.minecraft.structure.processor.StructureProcessorType;
 import net.minecraft.text.Text;
-import net.minecraft.text.Texts;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
@@ -98,14 +94,18 @@ public class TaleOfKingdoms implements ModInitializer {
 
     public static final Identifier INSTANCE_PACKET_ID = new Identifier(TaleOfKingdoms.MODID, "instance");
     public static final Identifier SIGN_CONTRACT_PACKET_ID = new Identifier(TaleOfKingdoms.MODID, "sign_contract");
+    public static final Identifier FIX_GUILD_PACKET_ID = new Identifier(TaleOfKingdoms.MODID, "fix_guild");
+    public static final Identifier TOGGLE_SELL_GUI_PACKET_ID = new Identifier(TaleOfKingdoms.MODID, "open_sell_gui");
+    public static final Identifier BUY_ITEM_PACKET_ID = new Identifier(TaleOfKingdoms.MODID, "buy_item");
+    public static final Identifier BANKER_INTERACT_PACKET_ID = new Identifier(TaleOfKingdoms.MODID, "banker_interact");
 
     public static final StructurePieceType REFICULE_VILLAGE = ReficuleVillageGenerator.ReficuleVillagePiece::new;
-    private static final StructureFeature<DefaultFeatureConfig> REFICULE_VILLAGE_STRUCTURE = new ReficuleVillageFeature(DefaultFeatureConfig.CODEC);
+    public static final StructureFeature<DefaultFeatureConfig> REFICULE_VILLAGE_STRUCTURE = new ReficuleVillageFeature(DefaultFeatureConfig.CODEC);
     private static final ConfiguredStructureFeature<?, ?> REFICULE_VILLAGE_CONFIGURED = REFICULE_VILLAGE_STRUCTURE.configure(DefaultFeatureConfig.DEFAULT);
     public static final StructurePieceType GATEWAY = GatewayGenerator.GatewayPiece::new;
     private static final StructureFeature<DefaultFeatureConfig> GATEWAY_STRUCTURE = new GatewayFeature(DefaultFeatureConfig.CODEC);
     private static final ConfiguredStructureFeature<?, ?> GATEWAY_CONFIGURED = GATEWAY_STRUCTURE.configure(DefaultFeatureConfig.DEFAULT);
-    
+
     public static final StructureProcessorType<?> GUILD_PROCESSOR = StructureProcessorType.register("guild", GuildStructureProcessor.CODEC);
     public static final StructureProcessorType<?> GATEWAY_PROCESSOR = StructureProcessorType.register("gateway", GatewayStructureProcessor.CODEC);
 
@@ -142,6 +142,7 @@ public class TaleOfKingdoms implements ModInitializer {
         File file = new File(this.getDataFolder() + "worlds");
         if (!file.exists()) file.mkdirs();
         registerEvents();
+        registerCommands();
         TaleOfKingdoms.api = new TaleOfKingdomsAPI(this);
 
         this.registerFeatures();
@@ -149,6 +150,7 @@ public class TaleOfKingdoms implements ModInitializer {
         FabricDefaultAttributeRegistry.register(EntityTypes.INNKEEPER, InnkeeperEntity.createMobAttributes());
         FabricDefaultAttributeRegistry.register(EntityTypes.FARMER, FarmerEntity.createMobAttributes());
         FabricDefaultAttributeRegistry.register(EntityTypes.GUILDMASTER, GuildMasterEntity.createMobAttributes());
+        FabricDefaultAttributeRegistry.register(EntityTypes.GUILDMASTER_DEFENDER, GuildMasterDefenderEntity.createMobAttributes());
         FabricDefaultAttributeRegistry.register(EntityTypes.BLACKSMITH, BlacksmithEntity.createMobAttributes());
         FabricDefaultAttributeRegistry.register(EntityTypes.CITYBUILDER, CityBuilderEntity.createMobAttributes());
         FabricDefaultAttributeRegistry.register(EntityTypes.KNIGHT, KnightEntity.createMobAttributes());
@@ -204,17 +206,10 @@ public class TaleOfKingdoms implements ModInitializer {
         new BlockListener();
         new KingdomListener();
         new DeleteWorldListener();
-        CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> { // Register commands
-            dispatcher.register(CommandManager.literal(MODID).executes(context -> {
-                Entity entity = context.getSource().getEntity();
-                if (entity != null) {
-                    String taleOfKingdoms = "[\"\",{\"text\":\"Tale of Kingdoms: A new Conquest\",\"bold\":true,\"underlined\":true,\"color\":\"blue\"},{\"text\":\"\\n\"},{\"text\":\"By Cotander/SamB440 & others. (hover)\",\"color\":\"blue\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"https://gitlab.com/SamB440/tale-of-kingdoms/-/blob/master/src/main/resources/fabric.mod.json\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":[{\"text\":\"Marackai, Aksel0206, PyroPyxel, Sheepguard, michaelb229, The_KingCobra200, Krol05, BeingAmazing(Ben)#6423. Click to view full list.\"}]}},{\"text\":\"\\n\"},{\"text\":\" Take a look at our website: \",\"color\":\"gold\"},{\"text\":\"https://www.convallyria.com\",\"underlined\":true,\"color\":\"gold\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"https://www.convallyria.com\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":[{\"text\":\"Click to view our website.\"}]}},{\"text\":\"\\n\"},{\"text\":\" Join our Discord: \",\"color\":\"gold\"},{\"text\":\"https://discord.gg/fh62mxU\",\"underlined\":true,\"color\":\"gold\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"https://discord.gg/fh62mxU\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":[{\"text\":\"Click to join our Discord.\"}]}},{\"text\":\"\\n\"},{\"text\":\"\\n\"},{\"text\":\"Copyright (C) Convallyria 2021\",\"color\":\"gray\"}]";
-                    entity.sendSystemMessage(Texts.parse(context.getSource(), parse(new StringReader(taleOfKingdoms)), entity, 0), Util.NIL_UUID);
-                    return 1;
-                }
-                return 0;
-            }));
-        });
+    }
+
+    private void registerCommands() {
+        new TaleOfKingdomsCommands();
     }
 
     private void registerFeatures() {
@@ -246,7 +241,7 @@ public class TaleOfKingdoms implements ModInitializer {
                 Biome.Category.JUNGLE, Biome.Category.ICY, Biome.Category.DESERT, Biome.Category.MESA), gateway);
     }
 
-    private Text parse(StringReader stringReader) throws CommandSyntaxException {
+    public static Text parse(StringReader stringReader) throws CommandSyntaxException {
         try {
             Text text = Text.Serializer.fromJson(stringReader);
             if (text == null) {
@@ -266,4 +261,3 @@ public class TaleOfKingdoms implements ModInitializer {
                 .create();
     }
 }
-
