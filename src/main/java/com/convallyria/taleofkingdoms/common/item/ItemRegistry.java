@@ -8,7 +8,7 @@ import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Rarity;
 import net.minecraft.util.registry.Registry;
 
@@ -19,7 +19,7 @@ public class ItemRegistry extends Listener {
 
     public static final Map<TOKItem, Item> ITEMS = new HashMap<>();
     public static final ItemGroup TOK_ITEM_GROUP = FabricItemGroupBuilder.create(
-            new Identifier(TaleOfKingdoms.MODID, "general"))
+            new ResourceLocation(TaleOfKingdoms.MODID, "general"))
             .icon(() -> new ItemStack(ITEMS.get(TOKItem.COIN)))
             .build();
 
@@ -54,7 +54,7 @@ public class ItemRegistry extends Listener {
         int index = 1;
         for (TOKItem item : ITEMS.keySet()) {
             TaleOfKingdoms.LOGGER.info("[" + index + "/" + ITEMS.values().size() + "] Loading item: " + item.getRegistryName());
-            Registry.register(Registry.ITEM, new Identifier(TaleOfKingdoms.MODID, item.getRegistryName()), ITEMS.get(item));
+            Registry.register(Registry.ITEM, new ResourceLocation(TaleOfKingdoms.MODID, item.getRegistryName()), ITEMS.get(item));
             index++;
         }
     }

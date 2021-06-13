@@ -11,10 +11,10 @@ import com.convallyria.taleofkingdoms.managers.SoundManager;
 import com.convallyria.taleofkingdoms.server.packet.ServerPacketHandler;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.dedicated.MinecraftDedicatedServer;
-import net.minecraft.util.Identifier;
+import net.minecraft.server.dedicated.DedicatedServer;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,11 +30,11 @@ public class TaleOfKingdomsAPI {
     private final ConquestInstanceStorage cis;
     private final Map<String, IManager> managers = new HashMap<>();
     @Environment(EnvType.SERVER)
-    private MinecraftDedicatedServer minecraftServer;
+    private DedicatedServer minecraftServer;
     @Environment(EnvType.SERVER)
-    private final Map<Identifier, ServerPacketHandler> serverPacketHandlers = new ConcurrentHashMap<>();
+    private final Map<ResourceLocation, ServerPacketHandler> serverPacketHandlers = new ConcurrentHashMap<>();
     @Environment(EnvType.CLIENT)
-    private final Map<Identifier, ClientPacketHandler> clientPacketHandlers = new ConcurrentHashMap<>();
+    private final Map<ResourceLocation, ClientPacketHandler> clientPacketHandlers = new ConcurrentHashMap<>();
     private final Scheduler scheduler;
 
     public TaleOfKingdomsAPI(TaleOfKingdoms mod) {
@@ -46,7 +46,7 @@ public class TaleOfKingdomsAPI {
     }
 
     @Environment(EnvType.SERVER)
-    public ServerPacketHandler getServerHandler(Identifier identifier) {
+    public ServerPacketHandler getServerHandler(ResourceLocation identifier) {
         return serverPacketHandlers.get(identifier);
     }
 
@@ -56,7 +56,7 @@ public class TaleOfKingdomsAPI {
     }
 
     @Environment(EnvType.CLIENT)
-    public ClientPacketHandler getClientHandler(Identifier identifier) {
+    public ClientPacketHandler getClientHandler(ResourceLocation identifier) {
         return clientPacketHandlers.get(identifier);
     }
 
@@ -107,12 +107,12 @@ public class TaleOfKingdomsAPI {
 
     @Environment(EnvType.CLIENT)
     public void executeOnMain(Runnable runnable) {
-        MinecraftClient.getInstance().execute(runnable);
+        Minecraft.getInstance().execute(runnable);
     }
 
     @Environment(EnvType.CLIENT)
     public void executeOnServer(Runnable runnable) {
-        MinecraftServer server = MinecraftClient.getInstance().getServer();
+        MinecraftServer server = Minecraft.getInstance().getServer();
         if (server != null) {
             MinecraftClient.getInstance().getServer().execute(runnable);
         } else {
@@ -135,12 +135,12 @@ public class TaleOfKingdomsAPI {
     }
 
     @Environment(EnvType.SERVER)
-    public Optional<MinecraftDedicatedServer> getServer() {
+    public Optional<DedicatedServer> getServer() {
         return Optional.ofNullable(minecraftServer);
     }
 
     @Environment(EnvType.SERVER)
-    public void setServer(MinecraftDedicatedServer minecraftServer) {
+    public void setServer(DedicatedServer minecraftServer) {
         if (this.minecraftServer != null) {
             throw new IllegalStateException("Server already registered");
         }

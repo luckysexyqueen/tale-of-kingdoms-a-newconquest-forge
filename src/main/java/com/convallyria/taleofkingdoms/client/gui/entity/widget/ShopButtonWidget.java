@@ -7,7 +7,7 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.opengl.GL40;
 
@@ -35,7 +35,7 @@ public class ShopButtonWidget extends ButtonWidget {
 
     @Override
     public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        Identifier identifier = new Identifier(TaleOfKingdoms.MODID,"textures/gui/gui.png");
+        ResourceLocation identifier = new ResourceLocation(TaleOfKingdoms.MODID,"textures/gui/gui.png");
         MinecraftClient.getInstance().getTextureManager().bindTexture(identifier);
         GL40.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         boolean flag = isMouseOver(mouseX, mouseY);

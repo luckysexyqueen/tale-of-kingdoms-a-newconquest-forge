@@ -7,7 +7,7 @@ import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,11 +21,11 @@ import java.util.concurrent.ThreadLocalRandom;
 @Environment(EnvType.CLIENT)
 public class TOKBipedRender<T extends MobEntity, M extends BipedEntityModel<T>> extends BipedEntityRenderer<MobEntity, PlayerEntityModel<MobEntity>> {
 
-    private final List<Identifier> skins;
-    private final Map<UUID, Identifier> defaultSkin;
+    private final List<ResourceLocation> skins;
+    private final Map<UUID, ResourceLocation> defaultSkin;
 
     public TOKBipedRender(EntityRendererFactory.Context context, PlayerEntityModel<MobEntity> modelBipedIn,
-                          float shadowSize, Identifier... skins) {
+                          float shadowSize, ResourceLocation... skins) {
         super(context, modelBipedIn, shadowSize);
         this.skins = new ArrayList<>();
         this.defaultSkin = new ConcurrentHashMap<>();
@@ -33,7 +33,7 @@ public class TOKBipedRender<T extends MobEntity, M extends BipedEntityModel<T>> 
     }
 
     @Override
-    public Identifier getTexture(MobEntity entity) {
+    public ResourceLocation getTexture(MobEntity entity) {
         Random random = ThreadLocalRandom.current();
         defaultSkin.putIfAbsent(entity.getUuid(), skins.get(random.nextInt(skins.size())));
         return defaultSkin.get(entity.getUuid());

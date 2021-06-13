@@ -2,11 +2,11 @@ package com.convallyria.taleofkingdoms.mixin.structure;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.render.block.entity.StructureBlockBlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.StructureBlockRenderer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 
-@Mixin(StructureBlockBlockEntityRenderer.class)
+@Mixin(StructureBlockRenderer.class)
 public class StructureBlockRenderMixin {
 
     /**
@@ -15,7 +15,7 @@ public class StructureBlockRenderMixin {
      */
     @Overwrite
     @Environment(EnvType.CLIENT)
-    public int getRenderDistance() {
+    public int getViewDistance() {
         return 256;
     }
 }

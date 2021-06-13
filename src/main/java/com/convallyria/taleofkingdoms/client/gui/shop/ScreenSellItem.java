@@ -15,7 +15,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -23,7 +23,7 @@ import java.util.Optional;
 
 public class ScreenSellItem extends HandledScreen<ScreenHandler> {
     //A path to the gui texture. In this example we use the texture from the dispenser
-    private static final Identifier TEXTURE = new Identifier(TaleOfKingdoms.MODID, "textures/gui/guisell.png");
+    private static final ResourceLocation TEXTURE = new ResourceLocation(TaleOfKingdoms.MODID, "textures/gui/guisell.png");
 
     private final PlayerInventory playerInventory;
 

@@ -12,8 +12,8 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.text.LiteralText;
-import net.minecraft.util.Identifier;
 
 public class BankerScreen extends ScreenTOK {
 
@@ -27,7 +27,7 @@ public class BankerScreen extends ScreenTOK {
     public BankerScreen(PlayerEntity player, BankerEntity entity, ClientConquestInstance instance) {
         super("menu.taleofkingdoms.banker.name");
         this.player = player;
-        addImage(new Image(new Identifier(TaleOfKingdoms.MODID, "textures/gui/crafting.png"), this.width / 2 + 50, this.height / 2 + 25, new int[]{230, 230}));
+        addImage(new Image(new ResourceLocation(TaleOfKingdoms.MODID, "textures/gui/crafting.png"), this.width / 2 + 50, this.height / 2 + 25, new int[]{230, 230}));
         this.entity = entity;
         this.instance = instance;
         Translations.BANK_OPEN.send(player);

@@ -12,10 +12,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.tag.ItemTags;
 import net.minecraft.text.LiteralText;
-import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,7 +28,7 @@ public final class IncomingFixGuildPacketHandler extends ServerPacketHandler {
     }
 
     @Override
-    public void handleIncomingPacket(Identifier identifier, PacketContext context, PacketByteBuf attachedData) {
+    public void handleIncomingPacket(ResourceLocation identifier, PacketContext context, PacketByteBuf attachedData) {
         ServerPlayerEntity player = (ServerPlayerEntity) context.player();
         String playerContext = " @ <" + player.getName().asString() + ":" + player.getIp() + ">";
         context.taskQueue().execute(() -> {
@@ -70,7 +70,7 @@ public final class IncomingFixGuildPacketHandler extends ServerPacketHandler {
 
 
     @Override
-    public void handleOutgoingPacket(Identifier identifier, @NotNull PlayerEntity player,
+    public void handleOutgoingPacket(ResourceLocation identifier, @NotNull PlayerEntity player,
                                      @Nullable ClientConnection connection, @Nullable Object... data) {
         throw new IllegalArgumentException("Not supported");
     }

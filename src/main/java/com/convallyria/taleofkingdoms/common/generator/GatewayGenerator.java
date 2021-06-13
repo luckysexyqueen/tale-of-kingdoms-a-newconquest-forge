@@ -4,35 +4,28 @@ import com.convallyria.taleofkingdoms.TaleOfKingdoms;
 import com.convallyria.taleofkingdoms.common.entity.EntityTypes;
 import com.convallyria.taleofkingdoms.common.utils.EntityUtils;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.structure.IglooGenerator;
 import net.minecraft.structure.SimpleStructurePiece;
-import net.minecraft.structure.Structure;
 import net.minecraft.structure.StructureManager;
-import net.minecraft.structure.StructurePiece;
-import net.minecraft.structure.StructurePieceType;
 import net.minecraft.structure.StructurePiecesHolder;
 import net.minecraft.structure.StructurePlacementData;
 import net.minecraft.structure.processor.BlockIgnoreStructureProcessor;
 import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.ServerWorldAccess;
-import net.minecraft.world.gen.feature.IglooFeature;
 
-import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.function.Function;
 
 public class GatewayGenerator {
 
-    private static final Identifier GATEWAY = new Identifier(TaleOfKingdoms.MODID, "gateway/gateway");
-    private static final Identifier BARS = new Identifier(TaleOfKingdoms.MODID, "gateway/bars");
+    private static final ResourceLocation GATEWAY = new ResourceLocation(TaleOfKingdoms.MODID, "gateway/gateway");
+    private static final ResourceLocation BARS = new ResourceLocation(TaleOfKingdoms.MODID, "gateway/bars");
 
     public static void addPieces(StructureManager manager, BlockPos pos, BlockRotation blockRotation, StructurePiecesHolder structurePiecesHolder, Random random) {
         final Direction direction = Direction.random(ThreadLocalRandom.current());
@@ -51,9 +44,9 @@ public class GatewayGenerator {
 
     public static class GatewayPiece extends SimpleStructurePiece {
         private final BlockRotation rotation;
-        private final Identifier template;
+        private final ResourceLocation template;
 
-        public GatewayPiece(StructureManager structureManager, Identifier identifier, BlockPos blockPos, BlockRotation blockRotation, int i) {
+        public GatewayPiece(StructureManager structureManager, ResourceLocation identifier, BlockPos blockPos, BlockRotation blockRotation, int i) {
             super(TaleOfKingdoms.GATEWAY, 0, structureManager, identifier, identifier.toString(), createPlacementData(blockRotation, identifier), blockPos);
             this.pos = pos;
             this.rotation = blockRotation;
@@ -65,12 +58,12 @@ public class GatewayGenerator {
             super(TaleOfKingdoms.GATEWAY, nbtCompound, serverWorld, (identifier) -> {
                 return createPlacementData(BlockRotation.valueOf(nbtCompound.getString("Rot")), identifier);
             });
-            this.template = new Identifier(nbtCompound.getString("Template"));
+            this.template = new ResourceLocation(nbtCompound.getString("Template"));
             this.rotation = BlockRotation.valueOf(nbtCompound.getString("Rot"));
             createPlacementData(rotation, template);
         }
 
-        private static StructurePlacementData createPlacementData(BlockRotation blockRotation, Identifier identifier) {
+        private static StructurePlacementData createPlacementData(BlockRotation blockRotation, ResourceLocation identifier) {
             return (new StructurePlacementData())
                     .setRotation(blockRotation)
                     .setMirror(BlockMirror.NONE)

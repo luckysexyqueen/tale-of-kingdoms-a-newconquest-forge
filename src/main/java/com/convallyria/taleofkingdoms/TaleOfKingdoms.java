@@ -51,24 +51,25 @@ import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityT
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.fabricmc.fabric.api.structure.v1.FabricStructureBuilder;
-import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.command.argument.TextArgumentType;
+import net.minecraft.commands.arguments.ComponentArgument;
+import net.minecraft.core.Registry;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.structure.StructurePieceType;
 import net.minecraft.structure.processor.StructureProcessorType;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.BuiltinRegistries;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.gen.GenerationStep;
-import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.StructureFeature;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.levelgen.GenerationStep;
+import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -88,14 +89,14 @@ public class TaleOfKingdoms implements ModInitializer {
 
     private static TaleOfKingdomsAPI api;
 
-    public static final Identifier INSTANCE_PACKET_ID = new Identifier(TaleOfKingdoms.MODID, "instance");
-    public static final Identifier SIGN_CONTRACT_PACKET_ID = new Identifier(TaleOfKingdoms.MODID, "sign_contract");
-    public static final Identifier FIX_GUILD_PACKET_ID = new Identifier(TaleOfKingdoms.MODID, "fix_guild");
-    public static final Identifier TOGGLE_SELL_GUI_PACKET_ID = new Identifier(TaleOfKingdoms.MODID, "open_sell_gui");
-    public static final Identifier BUY_ITEM_PACKET_ID = new Identifier(TaleOfKingdoms.MODID, "buy_item");
-    public static final Identifier BANKER_INTERACT_PACKET_ID = new Identifier(TaleOfKingdoms.MODID, "banker_interact");
-    public static final Identifier HUNTER_PACKET_ID = new Identifier(TaleOfKingdoms.MODID, "hunter");
-    public static final Identifier INNKEEPER_PACKET_ID = new Identifier(TaleOfKingdoms.MODID, "innkeeper");
+    public static final ResourceLocation INSTANCE_PACKET_ID = new ResourceLocation(TaleOfKingdoms.MODID, "instance");
+    public static final ResourceLocation SIGN_CONTRACT_PACKET_ID = new ResourceLocation(TaleOfKingdoms.MODID, "sign_contract");
+    public static final ResourceLocation FIX_GUILD_PACKET_ID = new ResourceLocation(TaleOfKingdoms.MODID, "fix_guild");
+    public static final ResourceLocation TOGGLE_SELL_GUI_PACKET_ID = new ResourceLocation(TaleOfKingdoms.MODID, "open_sell_gui");
+    public static final ResourceLocation BUY_ITEM_PACKET_ID = new ResourceLocation(TaleOfKingdoms.MODID, "buy_item");
+    public static final ResourceLocation BANKER_INTERACT_PACKET_ID = new ResourceLocation(TaleOfKingdoms.MODID, "banker_interact");
+    public static final ResourceLocation HUNTER_PACKET_ID = new ResourceLocation(TaleOfKingdoms.MODID, "hunter");
+    public static final ResourceLocation INNKEEPER_PACKET_ID = new ResourceLocation(TaleOfKingdoms.MODID, "innkeeper");
 
     public static final StructurePieceType REFICULE_VILLAGE = ReficuleVillageGenerator.ReficuleVillagePiece::new;
     public static final StructureFeature<DefaultFeatureConfig> REFICULE_VILLAGE_STRUCTURE = new ReficuleVillageFeature(DefaultFeatureConfig.CODEC);
@@ -113,13 +114,13 @@ public class TaleOfKingdoms implements ModInitializer {
     public static final BlockEntityType<SellBlockEntity> SELL_BLOCK_ENTITY;
 
     // a public identifier for multiple parts of our bigger chest
-    public static final Identifier SELL_BLOCK_IDENTIFIER = new Identifier(MODID, "sell_block");
+    public static final ResourceLocation SELL_BLOCK_IDENTIFIER = new ResourceLocation(MODID, "sell_block");
 
     static {
         //We use registerSimple here because our Entity is not an ExtendedScreenHandlerFactory
         //but a NamedScreenHandlerFactory.
         //In a later Tutorial you will see what ExtendedScreenHandlerFactory can do!
-        SELL_SCREEN_HANDLER = ScreenHandlerRegistry.registerSimple(new Identifier(TaleOfKingdoms.MODID, "sell_screen"), SellScreenHandler::new);
+        SELL_SCREEN_HANDLER = ScreenHandlerRegistry.registerSimple(new ResourceLocation(TaleOfKingdoms.MODID, "sell_screen"), SellScreenHandler::new);
 
         SELL_BLOCK = Registry.register(Registry.BLOCK, SELL_BLOCK_IDENTIFIER, new SellBlock(FabricBlockSettings.copyOf(Blocks.CHEST)));
 
@@ -197,39 +198,39 @@ public class TaleOfKingdoms implements ModInitializer {
     }
 
     private void registerFeatures() {
-        Registry.register(Registry.STRUCTURE_PIECE, new Identifier(MODID, "reficule_village_piece"), REFICULE_VILLAGE);
+        Registry.register(Registry.STRUCTURE_PIECE, new ResourceLocation(MODID, "reficule_village_piece"), REFICULE_VILLAGE);
         Random random = ThreadLocalRandom.current();
         int seed = random.nextInt(9000) + 1000;
-        FabricStructureBuilder.create(new Identifier(MODID, "reficule_village"), REFICULE_VILLAGE_STRUCTURE)
+        FabricStructureBuilder.create(new ResourceLocation(MODID, "reficule_village"), REFICULE_VILLAGE_STRUCTURE)
                 .step(GenerationStep.Feature.SURFACE_STRUCTURES)
                 .defaultConfig(48, 8, seed)
                 .adjustsSurface()
                 .register();
 
         RegistryKey<ConfiguredStructureFeature<?, ?>> reficuleVillage = RegistryKey.of(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY,
-                new Identifier(MODID, "reficule_village"));
+                new ResourceLocation(MODID, "reficule_village"));
         BuiltinRegistries.add(BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE, reficuleVillage.getValue(), REFICULE_VILLAGE_CONFIGURED);
         BiomeModifications.addStructure(BiomeSelectors.categories(Biome.Category.PLAINS, Biome.Category.FOREST,
                 Biome.Category.JUNGLE, Biome.Category.ICY, Biome.Category.TAIGA, Biome.Category.SAVANNA, Biome.Category.MESA), reficuleVillage);
 
-        Registry.register(Registry.STRUCTURE_PIECE, new Identifier(MODID, "gateway_piece"), GATEWAY);
-        FabricStructureBuilder.create(new Identifier(MODID, "gateway"), GATEWAY_STRUCTURE)
+        Registry.register(Registry.STRUCTURE_PIECE, new ResourceLocation(MODID, "gateway_piece"), GATEWAY);
+        FabricStructureBuilder.create(new ResourceLocation(MODID, "gateway"), GATEWAY_STRUCTURE)
                 .step(GenerationStep.Feature.SURFACE_STRUCTURES)
                 .defaultConfig(16, 8, seed - 256)
                 .register();
 
         RegistryKey<ConfiguredStructureFeature<?, ?>> gateway = RegistryKey.of(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY,
-                new Identifier(MODID, "gateway"));
+                new ResourceLocation(MODID, "gateway"));
         BuiltinRegistries.add(BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE, gateway.getValue(), GATEWAY_CONFIGURED);
         BiomeModifications.addStructure(BiomeSelectors.categories(Biome.Category.PLAINS, Biome.Category.FOREST,
                 Biome.Category.JUNGLE, Biome.Category.ICY, Biome.Category.DESERT, Biome.Category.MESA), gateway);
     }
 
-    public static Text parse(StringReader stringReader) throws CommandSyntaxException {
+    public static Component parse(StringReader stringReader) throws CommandSyntaxException {
         try {
-            Text text = Text.Serializer.fromJson(stringReader);
+            Component text = Component.Serializer.fromJson(stringReader);
             if (text == null) {
-                throw TextArgumentType.INVALID_COMPONENT_EXCEPTION.createWithContext(stringReader, "empty");
+                throw ComponentArgument.ERROR_INVALID_JSON.createWithContext(stringReader, "empty");
             } else {
                 return text;
             }

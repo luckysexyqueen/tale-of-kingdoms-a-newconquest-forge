@@ -5,9 +5,9 @@ import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
-public record Image(Identifier resourceLocation, int x, int y, int[] dimensions) implements IImage {
+public record Image(ResourceLocation resourceLocation, int x, int y, int[] dimensions) implements IImage {
 
     public int getWidth() {
         return dimensions[0];
@@ -18,7 +18,7 @@ public record Image(Identifier resourceLocation, int x, int y, int[] dimensions)
     }
 
     @Override
-    public Identifier getResourceLocation() {
+    public ResourceLocation getResourceLocation() {
         return resourceLocation;
     }
 

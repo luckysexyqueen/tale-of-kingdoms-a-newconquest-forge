@@ -20,9 +20,9 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -66,8 +66,8 @@ public class BlacksmithScreen extends ScreenTOK implements ShopScreenInterface {
         if (scaleSizeTwo.isEmpty()) return;
         int xTwo = scaleSizeTwo.get().getX();
         int yTwo = scaleSizeTwo.get().getY();
-        addImage(new Image(new Identifier(TaleOfKingdoms.MODID, "textures/gui/menu1.png"), x, y, new int[]{230, 230}));
-        addImage(new Image(new Identifier(TaleOfKingdoms.MODID, "textures/gui/menu2.png"), xTwo, yTwo, new int[]{230, 230}));
+        addImage(new Image(new ResourceLocation(TaleOfKingdoms.MODID, "textures/gui/menu1.png"), x, y, new int[]{230, 230}));
+        addImage(new Image(new ResourceLocation(TaleOfKingdoms.MODID, "textures/gui/menu2.png"), xTwo, yTwo, new int[]{230, 230}));
     }
 
     @Override

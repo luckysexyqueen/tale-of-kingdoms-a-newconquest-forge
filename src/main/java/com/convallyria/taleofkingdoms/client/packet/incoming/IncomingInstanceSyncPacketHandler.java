@@ -7,7 +7,7 @@ import com.convallyria.taleofkingdoms.common.world.ClientConquestInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -23,7 +23,7 @@ public final class IncomingInstanceSyncPacketHandler extends ClientPacketHandler
     }
 
     @Override
-    public void handleIncomingPacket(Identifier identifier, PacketContext context, PacketByteBuf attachedData) {
+    public void handleIncomingPacket(ResourceLocation identifier, PacketContext context, PacketByteBuf attachedData) {
         String name = attachedData.readString();
         String world = attachedData.readString();
         int bankerCoins = attachedData.readInt();
@@ -62,7 +62,7 @@ public final class IncomingInstanceSyncPacketHandler extends ClientPacketHandler
     }
 
     @Override
-    public void handleOutgoingPacket(Identifier identifier, @NotNull PlayerEntity player, @Nullable ClientConnection connection, @Nullable Object... data) {
+    public void handleOutgoingPacket(ResourceLocation identifier, @NotNull PlayerEntity player, @Nullable ClientConnection connection, @Nullable Object... data) {
         throw new IllegalStateException("Not supported");
     }
 }

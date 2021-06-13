@@ -13,7 +13,7 @@ import net.minecraft.structure.StructurePlacementData;
 import net.minecraft.structure.processor.BlockIgnoreStructureProcessor;
 import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -26,12 +26,12 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class ReficuleVillageGenerator {
 
-    private static final Identifier ONE = new Identifier(TaleOfKingdoms.MODID, "reficule_village/reficule_village_one");
-    private static final Identifier THREE = new Identifier(TaleOfKingdoms.MODID, "reficule_village/reficule_village_three");
-    private static final Identifier FOUR = new Identifier(TaleOfKingdoms.MODID, "reficule_village/reficule_village_four");
-    private static final Identifier MIDDLE = new Identifier(TaleOfKingdoms.MODID, "reficule_village/reficule_village_middle");
-    private static final Identifier MIDDLE_TWO = new Identifier(TaleOfKingdoms.MODID, "reficule_village/reficule_village_middle_two");
-    private static final Identifier TOWER = new Identifier(TaleOfKingdoms.MODID, "reficule_village/reficule_village_tower");
+    private static final ResourceLocation ONE = new ResourceLocation(TaleOfKingdoms.MODID, "reficule_village/reficule_village_one");
+    private static final ResourceLocation THREE = new ResourceLocation(TaleOfKingdoms.MODID, "reficule_village/reficule_village_three");
+    private static final ResourceLocation FOUR = new ResourceLocation(TaleOfKingdoms.MODID, "reficule_village/reficule_village_four");
+    private static final ResourceLocation MIDDLE = new ResourceLocation(TaleOfKingdoms.MODID, "reficule_village/reficule_village_middle");
+    private static final ResourceLocation MIDDLE_TWO = new ResourceLocation(TaleOfKingdoms.MODID, "reficule_village/reficule_village_middle_two");
+    private static final ResourceLocation TOWER = new ResourceLocation(TaleOfKingdoms.MODID, "reficule_village/reficule_village_tower");
 
     public static void addPieces(StructureManager manager, BlockPos pos, BlockRotation rotation, List<StructurePiece> pieces) {
         final Direction direction = Direction.random(ThreadLocalRandom.current());
@@ -67,9 +67,9 @@ public class ReficuleVillageGenerator {
 
     public static class ReficuleVillagePiece extends SimpleStructurePiece {
         private final BlockRotation rotation;
-        private final Identifier template;
+        private final ResourceLocation template;
 
-        public ReficuleVillagePiece(StructureManager structureManager, Identifier identifier, BlockPos blockPos, BlockRotation blockRotation, int i) {
+        public ReficuleVillagePiece(StructureManager structureManager, ResourceLocation identifier, BlockPos blockPos, BlockRotation blockRotation, int i) {
             super(TaleOfKingdoms.REFICULE_VILLAGE, 0, structureManager, identifier, identifier.toString(), createPlacementData(blockRotation, identifier), blockPos);
             this.pos = pos;
             this.rotation = blockRotation;
@@ -81,12 +81,12 @@ public class ReficuleVillageGenerator {
             super(TaleOfKingdoms.REFICULE_VILLAGE, nbtCompound, serverWorld, (identifier) -> {
                 return createPlacementData(BlockRotation.valueOf(nbtCompound.getString("Rot")), identifier);
             });
-            this.template = new Identifier(nbtCompound.getString("Template"));
+            this.template = new ResourceLocation(nbtCompound.getString("Template"));
             this.rotation = BlockRotation.valueOf(nbtCompound.getString("Rot"));
             createPlacementData(rotation, template);
         }
 
-        private static StructurePlacementData createPlacementData(BlockRotation blockRotation, Identifier identifier) {
+        private static StructurePlacementData createPlacementData(BlockRotation blockRotation, ResourceLocation identifier) {
             return (new StructurePlacementData())
                     .setRotation(blockRotation)
                     .setMirror(BlockMirror.NONE)

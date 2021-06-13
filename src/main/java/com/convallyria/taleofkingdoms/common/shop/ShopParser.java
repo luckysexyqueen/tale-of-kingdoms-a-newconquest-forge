@@ -7,7 +7,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import net.minecraft.item.Item;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 
 import java.io.File;
@@ -92,7 +92,7 @@ public class ShopParser {
     }
 
     private Item getItem(String name) throws ReflectiveOperationException {
-        return Registry.ITEM.get(new Identifier(name.toLowerCase()));
+        return Registry.ITEM.get(new ResourceLocation(name.toLowerCase()));
     }
 
     private String getName(JsonObject jsonObject) {

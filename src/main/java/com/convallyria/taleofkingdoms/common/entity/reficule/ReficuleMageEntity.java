@@ -11,13 +11,10 @@ import com.convallyria.taleofkingdoms.common.entity.generic.SpellcastingEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.enchantment.Enchantments;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityData;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.RangedAttackMob;
 import net.minecraft.entity.ai.goal.FollowTargetGoal;
 import net.minecraft.entity.ai.goal.LookAtEntityGoal;
 import net.minecraft.entity.ai.goal.RevengeGoal;
@@ -27,7 +24,6 @@ import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.entity.mob.Monster;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.entity.projectile.ProjectileUtil;
@@ -42,7 +38,12 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.monster.RangedAttackMob;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -53,16 +54,16 @@ public class ReficuleMageEntity extends SpellcastingEntity implements Monster, T
 
     // wtf are these
     private int field_7296;
-    private final Vec3d[][] field_7297;
+    private final Vec3[][] field_7297;
 
-    public ReficuleMageEntity(@NotNull EntityType<? extends ReficuleMageEntity> entityType, @NotNull World world) {
+    public ReficuleMageEntity(@NotNull EntityType<? extends ReficuleMageEntity> entityType, @NotNull Level world) {
         super(entityType, world);
-        this.experiencePoints = 5;
-        this.field_7297 = new Vec3d[2][4];
+        this.xpReward = 5;
+        this.field_7297 = new Vec3[2][4];
 
         for(int i = 0; i < 4; ++i) {
-            this.field_7297[0][i] = Vec3d.ZERO;
-            this.field_7297[1][i] = Vec3d.ZERO;
+            this.field_7297[0][i] = Vec3.ZERO;
+            this.field_7297[1][i] = Vec3.ZERO;
         }
     }
 
