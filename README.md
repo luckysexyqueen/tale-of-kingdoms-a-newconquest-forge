@@ -1,3 +1,6 @@
+# We've moved
+This project has been moved to https://github.com/SamB440/Tale-of-Kingdoms
+
 <br/>
 <div align="center">
   <a href="https://gitlab.com/SamB440/tale-of-kingdoms">
